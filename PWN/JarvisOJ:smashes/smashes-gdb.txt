@@ -1,0 +1,85 @@
+root@kali:~/Desktop/Pwn/smashes# gdb
+GNU gdb (Debian 7.12-6) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+gdb-peda$ file smashes
+Reading symbols from smashes...(no debugging symbols found)...done.
+gdb-peda$ b *0x40080e
+Breakpoint 1 at 0x40080e
+gdb-peda$ r
+Starting program: /root/Desktop/Pwn/smashes/smashes 
+Hello!
+What's your name? 
+[----------------------------------registers-----------------------------------]
+RAX: 0x19 
+RBX: 0x0 
+RCX: 0x7ffff7b16600 (<__write_nocancel+7>:	cmp    rax,0xfffffffffffff001)
+RDX: 0x7ffff7dd5760 --> 0x0 
+RSI: 0x19 
+RDI: 0x7fffffffdfd0 --> 0x7fffffffe0e0 --> 0x4008b0 (push   r15)
+RBP: 0x4008b0 (push   r15)
+RSP: 0x7fffffffdfd0 --> 0x7fffffffe0e0 --> 0x4008b0 (push   r15)
+RIP: 0x40080e (call   0x4006c0 <_IO_gets@plt>)
+R8 : 0x7ffff7fd3700 (0x00007ffff7fd3700)
+R9 : 0x19 
+R10: 0x400934 ("Hello!\nWhat's your name? ")
+R11: 0x246 
+R12: 0x4006ee (xor    ebp,ebp)
+R13: 0x7fffffffe1e0 --> 0x1 
+R14: 0x0 
+R15: 0x0
+EFLAGS: 0x202 (carry parity adjust zero sign trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x400804:	xor    eax,eax
+   0x400806:	call   0x4006b0 <__printf_chk@plt>
+   0x40080b:	mov    rdi,rsp
+=> 0x40080e:	call   0x4006c0 <_IO_gets@plt>
+   0x400813:	test   rax,rax
+   0x400816:	je     0x40089f
+   0x40081c:	mov    rdx,rsp
+   0x40081f:	mov    esi,0x400960
+Guessed arguments:
+arg[0]: 0x7fffffffdfd0 --> 0x7fffffffe0e0 --> 0x4008b0 (push   r15)
+[------------------------------------stack-------------------------------------]
+0000| 0x7fffffffdfd0 --> 0x7fffffffe0e0 --> 0x4008b0 (push   r15)
+0008| 0x7fffffffdfd8 --> 0x7ffff7def497 (<_dl_runtime_resolve_sse_vex+167>:	mov    r11,rax)
+0016| 0x7fffffffdfe0 --> 0x0 
+0024| 0x7fffffffdfe8 --> 0x0 
+0032| 0x7fffffffdff0 ('/' <repeats 16 times>)
+0040| 0x7fffffffdff8 ("////////")
+0048| 0x7fffffffe000 --> 0x0 
+0056| 0x7fffffffe008 --> 0x0 
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x000000000040080e in ?? ()
+gdb-peda$ find PCTF
+Searching for 'PCTF' in: None ranges
+Found 2 results, display max 2 items:
+smashes : 0x400d20 ("PCTF{Here's the flag on server}")
+smashes : 0x600d20 ("PCTF{Here's the flag on server}")
+gdb-peda$ find /root
+Searching for '/root' in: None ranges
+Found 4 results, display max 4 items:
+[stack] : 0x7fffffffe4d8 ("/root/Desktop/Pwn/smashes/smashes")
+[stack] : 0x7fffffffebfa ("/root/Desktop/Pwn/smashes")
+[stack] : 0x7fffffffec22 --> 0x4f4a00746f6f722f ('/root')
+[stack] : 0x7fffffffefd6 ("/root/Desktop/Pwn/smashes/smashes")
+gdb-peda$ find 0x7fffffffe4d8
+Searching for '0x7fffffffe4d8' in: None ranges
+Found 2 results, display max 2 items:
+   libc : 0x7ffff7dd43b8 --> 0x7fffffffe4d8 ("/root/Desktop/Pwn/smashes/smashes")
+[stack] : 0x7fffffffe1e8 --> 0x7fffffffe4d8 ("/root/Desktop/Pwn/smashes/smashes")
+gdb-peda$ distance $rsp 0x7fffffffe1e8
+From 0x7fffffffdfd0 to 0x7fffffffe1e8: 536 bytes, 134 dwords
