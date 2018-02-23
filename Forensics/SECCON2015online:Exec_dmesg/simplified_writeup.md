@@ -12,9 +12,8 @@ Or, if you have already installed this virtual machine, you have to command like
 - Boot information is stored in directory /var/log/dmesg [Click here to know more](http://man.linuxde.net/dmesg)
 However, when I used command 'dmesg' on this VM, its feedback was 'Applet not found'.Then I enter thr directory /var/log but nothing found apart from file autologin and wtmp.
 Consequently, I searched and searched but got no achievement.
-
-**Baidu also matters**
-[dmesg&kmsg](http://blog.csdn.net/zlcchina/article/details/24195331)
+<br/>**Baidu also matters**
+<br/>[dmesg&kmsg](http://blog.csdn.net/zlcchina/article/details/24195331)
 [Baidubaikesaid](https://baike.baidu.com/item/dmesg/271976?fr=aladdin)
 That's crucial to this challenge.
 >     cat /proc/kmsg | grep SECCON
