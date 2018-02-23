@@ -15,7 +15,7 @@ Consequently, I searched and searched but got no achievement.
 
 **Baidu also matters**
 [dmesg&kmsg](http://blog.csdn.net/zlcchina/article/details/24195331)
-[](https://baike.baidu.com/item/dmesg/271976?fr=aladdin)
+[Baidubaikesaid](https://baike.baidu.com/item/dmesg/271976?fr=aladdin)
 That's crucial to this challenge.
 >     cat /proc/kmsg | grep SECCON
 Flag emerged.
