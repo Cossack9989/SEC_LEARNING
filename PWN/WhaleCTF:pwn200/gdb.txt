@@ -1,0 +1,50 @@
+gdb-peda$ file binary_200
+Reading symbols from binary_200...done.
+gdb-peda$ b *0x80485D3
+Breakpoint 1 at 0x80485d3: file stackguard.c, line 16.
+gdb-peda$ r
+Starting program: /root/Desktop/Pwn/WhaleCTF_pwn2/binary_200 
+aaaa
+
+[----------------------------------registers-----------------------------------]
+EAX: 0xffffd284 ("aaaa")
+EBX: 0x0 
+ECX: 0xf7f9a5c0 --> 0xfbad2288 
+EDX: 0xf7f9b8a0 --> 0x0 
+ESI: 0xf7f9a000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffffd2b8 --> 0x0 
+ESP: 0xffffd270 --> 0xffffd284 ("aaaa")
+EIP: 0x80485d3 (<main+114>:	call   0x80483e0 <printf@plt>)
+EFLAGS: 0x246 (carry PARITY adjust ZERO sign trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x80485c7 <main+102>:	call   0x80483f0 <gets@plt>
+   0x80485cc <main+107>:	lea    eax,[esp+0x14]
+   0x80485d0 <main+111>:	mov    DWORD PTR [esp],eax
+=> 0x80485d3 <main+114>:	call   0x80483e0 <printf@plt>
+   0x80485d8 <main+119>:	lea    eax,[esp+0x14]
+   0x80485dc <main+123>:	mov    DWORD PTR [esp],eax
+   0x80485df <main+126>:	call   0x80483f0 <gets@plt>
+   0x80485e4 <main+131>:	mov    eax,0x0
+Guessed arguments:
+arg[0]: 0xffffd284 ("aaaa")
+[------------------------------------stack-------------------------------------]
+0000| 0xffffd270 --> 0xffffd284 ("aaaa")
+0004| 0xffffd274 --> 0x0 
+0008| 0xffffd278 --> 0x1 
+0012| 0xffffd27c --> 0x0 
+0016| 0xffffd280 --> 0xf7f9a000 --> 0x1cfd70 
+0020| 0xffffd284 ("aaaa")
+0024| 0xffffd288 --> 0x804a000 --> 0x8049f14 --> 0x1 
+0028| 0xffffd28c --> 0x8048652 (<__libc_csu_init+82>:	add    edi,0x1)
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x080485d3 in main () at stackguard.c:16
+16	stackguard.c: No such file or directory.
+gdb-peda$ x/20wx 0xffffd270
+0xffffd270:	0xffffd284	0x00000000	0x00000001	0x00000000
+0xffffd280:	0xf7f9a000	0x61616161	0x0804a000	0x08048652
+0xffffd290:	0x00000001	0xffffd354	0xffffd35c	0xf7df9fcb
+0xffffd2a0:	0xf7f9a3fc	0x08048238	0x0804860b	0x85add700
+0xffffd2b0:	0xf7f9a000	0xf7f9a000	0x00000000	0xf7de2783
