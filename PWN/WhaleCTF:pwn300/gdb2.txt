@@ -1,0 +1,64 @@
+root@kali:~/Desktop/Pwn/WhaleCTF_pwn3# gdb
+GNU gdb (Debian 7.12-6+b1) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+gdb-peda$ file binary_300 
+Reading symbols from binary_300...(no debugging symbols found)...done.
+gdb-peda$ b *0x80485c6
+Breakpoint 1 at 0x80485c6
+gdb-peda$ r
+Starting program: /root/Desktop/Pwn/WhaleCTF_pwn3/binary_300 
+aaaa
+
+[----------------------------------registers-----------------------------------]
+EAX: 0xffffd25c ("aaaa\n")
+EBX: 0x0 
+ECX: 0xf7f9b8a0 --> 0x0 
+EDX: 0xffffd25c ("aaaa\n")
+ESI: 0xf7f9a000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffffd2a8 --> 0x0 
+ESP: 0xffffd240 --> 0xffffd25c ("aaaa\n")
+EIP: 0x80485c6 (<main+98>:	call   0x80483e0 <printf@plt>)
+EFLAGS: 0x296 (carry PARITY ADJUST zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x80485bf <main+91>:	sub    esp,0xc
+   0x80485c2 <main+94>:	lea    eax,[ebp-0x4c]
+   0x80485c5 <main+97>:	push   eax
+=> 0x80485c6 <main+98>:	call   0x80483e0 <printf@plt>
+   0x80485cb <main+103>:	add    esp,0x10
+   0x80485ce <main+106>:	mov    eax,ds:0x804a040
+   0x80485d3 <main+111>:	sub    esp,0x4
+   0x80485d6 <main+114>:	push   eax
+Guessed arguments:
+arg[0]: 0xffffd25c ("aaaa\n")
+[------------------------------------stack-------------------------------------]
+0000| 0xffffd240 --> 0xffffd25c ("aaaa\n")
+0004| 0xffffd244 --> 0x40 ('@')
+0008| 0xffffd248 --> 0xf7f9a5c0 --> 0xfbad2288 
+0012| 0xffffd24c --> 0x0 
+0016| 0xffffd250 --> 0x0 
+0020| 0xffffd254 --> 0xffffd2f4 --> 0xdcc550f2 
+0024| 0xffffd258 --> 0x0 
+0028| 0xffffd25c ("aaaa\n")
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x080485c6 in main ()
+gdb-peda$ x/20wx 0xffffd240
+0xffffd240:	0xffffd25c	0x00000040	0xf7f9a5c0	0x00000000
+0xffffd250:	0x00000000	0xffffd2f4	0x00000000	0x61616161
+0xffffd260:	0xffff000a	0xffffd4e8	0xf7dd7138	0xf7fd0110
+0xffffd270:	0x00000000	0xf7f9a000	0xf7ffca00	0xf7de2126
+0xffffd280:	0xf7f9a000	0x00000000	0xf7df9e10	0x0804866b
