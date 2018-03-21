@@ -5,6 +5,7 @@
 - hijack function
 ## In stack
 - Stackoverflow-Ret2lib
+- Stackoverflow-Ret2reg
 - Stackoverflow-nolibLeak
 - Stackoverflow-StackSmash
 - FmtStrVul-canaryleak
