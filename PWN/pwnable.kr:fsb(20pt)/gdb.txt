@@ -1,0 +1,422 @@
+root@MiWiFi-R3-srv:~/Desktop/Pwn# gdb
+GNU gdb (Debian 7.12-6+b1) 7.12.0.20161007-git
+Copyright (C) 2016 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word".
+gdb-peda$ file fsb
+Reading symbols from fsb...(no debugging symbols found)...done.
+gdb-peda$ b *0x8048610
+Breakpoint 1 at 0x8048610
+gdb-peda$ r
+Starting program: /root/Desktop/Pwn/fsb 
+Give me some format strings(1)
+aaaa
+
+[----------------------------------registers-----------------------------------]
+EAX: 0x804a100 ("aaaa\n")
+EBX: 0xffba9870 --> 0x1 
+ECX: 0x804a100 ("aaaa\n")
+EDX: 0x64 ('d')
+ESI: 0xf7f47000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffb975f8 --> 0xffba9858 --> 0x0 
+ESP: 0xffb975b0 --> 0x804a100 ("aaaa\n")
+EIP: 0x8048610 (<fsb+220>:	call   0x80483f0 <printf@plt>)
+EFLAGS: 0x282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x8048603 <fsb+207>:	call   0x80483e0 <read@plt>
+   0x8048608 <fsb+212>:	mov    eax,0x804a100
+   0x804860d <fsb+217>:	mov    DWORD PTR [esp],eax
+=> 0x8048610 <fsb+220>:	call   0x80483f0 <printf@plt>
+   0x8048615 <fsb+225>:	add    DWORD PTR [ebp-0x1c],0x1
+   0x8048619 <fsb+229>:	cmp    DWORD PTR [ebp-0x1c],0x3
+   0x804861d <fsb+233>:	jle    0x80485d5 <fsb+161>
+   0x804861f <fsb+235>:	mov    DWORD PTR [esp],0x8048899
+Guessed arguments:
+arg[0]: 0x804a100 ("aaaa\n")
+[------------------------------------stack-------------------------------------]
+0000| 0xffb975b0 --> 0x804a100 ("aaaa\n")
+0004| 0xffb975b4 --> 0x804a100 ("aaaa\n")
+0008| 0xffb975b8 --> 0x64 ('d')
+0012| 0xffb975bc --> 0x0 
+0016| 0xffb975c0 --> 0x0 
+0020| 0xffb975c4 --> 0x0 
+0024| 0xffb975c8 --> 0x0 
+0028| 0xffb975cc --> 0x0 
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x08048610 in fsb ()
+gdb-peda$ x/30wx 0xffb975b0
+0xffb975b0:	0x0804a100	0x0804a100	0x00000064	0x00000000
+0xffb975c0:	0x00000000	0x00000000	0x00000000	0x00000000
+0xffb975d0:	0x00000000	0x08048870	0x00000000	0x00000000
+0xffb975e0:	0xffba99e4	0xffbabfe1	0xffb97600	0xffb97604
+0xffb975f0:	0x00000000	0x00000000	0xffba9858	0x08048791
+0xffb97600:	0x00000000	0x00000000	0x00000000	0x00000000
+0xffb97610:	0x00000000	0x00000000	0x00000000	0x00000000
+0xffb97620:	0x00000000	0x00000000
+gdb-peda$ bt
+#0  0x08048610 in fsb ()
+#1  0x08048791 in main ()
+#2  0xf7d8f783 in __libc_start_main () from /lib/i386-linux-gnu/libc.so.6
+#3  0x080484a1 in _start ()
+gdb-peda$ find 0xffb97600
+Searching for '0xffb97600' in: None ranges
+Found 1 results, display max 1 items:
+[stack] : 0xffb975e8 --> 0xffb97600 --> 0x0 
+gdb-peda$ find 0xffbabfe1
+Searching for '0xffbabfe1' in: None ranges
+Found 1 results, display max 1 items:
+[stack] : 0xffb975e4 --> 0xffbabfe1 --> 0x6f722f00 ('')
+gdb-peda$ i r a
+eax            0x804a100	0x804a100
+ecx            0x804a100	0x804a100
+edx            0x64	0x64
+ebx            0xffba9870	0xffba9870
+esp            0xffb975b0	0xffb975b0
+ebp            0xffb975f8	0xffb975f8
+esi            0xf7f47000	0xf7f47000
+edi            0x0	0x0
+eip            0x8048610	0x8048610 <fsb+220>
+eflags         0x282	[ SF IF ]
+cs             0x23	0x23
+ss             0x2b	0x2b
+ds             0x2b	0x2b
+es             0x2b	0x2b
+fs             0x0	0x0
+gs             0x63	0x63
+st0            0	(raw 0x00000000000000000000)
+st1            0	(raw 0x00000000000000000000)
+st2            0	(raw 0x00000000000000000000)
+st3            0	(raw 0x00000000000000000000)
+st4            0	(raw 0x00000000000000000000)
+st5            0	(raw 0x00000000000000000000)
+st6            0	(raw 0x00000000000000000000)
+st7            0	(raw 0x00000000000000000000)
+fctrl          0x37f	0x37f
+fstat          0x0	0x0
+ftag           0xffff	0xffff
+fiseg          0x0	0x0
+fioff          0x0	0x0
+foseg          0x0	0x0
+fooff          0x0	0x0
+fop            0x0	0x0
+xmm0           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm1           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm2           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm3           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm4           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm5           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm6           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+xmm7           {
+  v4_float = {0x0, 0x0, 0x0, 0x0}, 
+  v2_double = {0x0, 0x0}, 
+  v16_int8 = {0x0 <repeats 16 times>}, 
+  v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, 
+  v4_int32 = {0x0, 0x0, 0x0, 0x0}, 
+  v2_int64 = {0x0, 0x0}, 
+  uint128 = 0x00000000000000000000000000000000
+}
+mxcsr          0x1f80	[ IM DM ZM OM UM PM ]
+mm0            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm1            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm2            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm3            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm4            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm5            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm6            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+mm7            {
+  uint64 = 0x0, 
+  v2_int32 = {0x0, 0x0}, 
+  v4_int16 = {0x0, 0x0, 0x0, 0x0}, 
+  v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}
+}
+gdb-peda$ b *0x8048676
+Breakpoint 2 at 0x8048676
+gdb-peda$ c
+Continuing.
+aaaa
+Give me some format strings(2)
+aaaa
+
+[----------------------------------registers-----------------------------------]
+EAX: 0x804a100 ("aaaa\n")
+EBX: 0xffba9870 --> 0x1 
+ECX: 0x804a100 ("aaaa\n")
+EDX: 0x64 ('d')
+ESI: 0xf7f47000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffb975f8 --> 0xffba9858 --> 0x0 
+ESP: 0xffb975b0 --> 0x804a100 ("aaaa\n")
+EIP: 0x8048610 (<fsb+220>:	call   0x80483f0 <printf@plt>)
+EFLAGS: 0x282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x8048603 <fsb+207>:	call   0x80483e0 <read@plt>
+   0x8048608 <fsb+212>:	mov    eax,0x804a100
+   0x804860d <fsb+217>:	mov    DWORD PTR [esp],eax
+=> 0x8048610 <fsb+220>:	call   0x80483f0 <printf@plt>
+   0x8048615 <fsb+225>:	add    DWORD PTR [ebp-0x1c],0x1
+   0x8048619 <fsb+229>:	cmp    DWORD PTR [ebp-0x1c],0x3
+   0x804861d <fsb+233>:	jle    0x80485d5 <fsb+161>
+   0x804861f <fsb+235>:	mov    DWORD PTR [esp],0x8048899
+Guessed arguments:
+arg[0]: 0x804a100 ("aaaa\n")
+[------------------------------------stack-------------------------------------]
+0000| 0xffb975b0 --> 0x804a100 ("aaaa\n")
+0004| 0xffb975b4 --> 0x804a100 ("aaaa\n")
+0008| 0xffb975b8 --> 0x64 ('d')
+0012| 0xffb975bc --> 0x0 
+0016| 0xffb975c0 --> 0x0 
+0020| 0xffb975c4 --> 0x0 
+0024| 0xffb975c8 --> 0x0 
+0028| 0xffb975cc --> 0x0 
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x08048610 in fsb ()
+gdb-peda$ c
+Continuing.
+aaaa
+Give me some format strings(3)
+aaaa
+
+[----------------------------------registers-----------------------------------]
+EAX: 0x804a100 ("aaaa\n")
+EBX: 0xffba9870 --> 0x1 
+ECX: 0x804a100 ("aaaa\n")
+EDX: 0x64 ('d')
+ESI: 0xf7f47000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffb975f8 --> 0xffba9858 --> 0x0 
+ESP: 0xffb975b0 --> 0x804a100 ("aaaa\n")
+EIP: 0x8048610 (<fsb+220>:	call   0x80483f0 <printf@plt>)
+EFLAGS: 0x282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x8048603 <fsb+207>:	call   0x80483e0 <read@plt>
+   0x8048608 <fsb+212>:	mov    eax,0x804a100
+   0x804860d <fsb+217>:	mov    DWORD PTR [esp],eax
+=> 0x8048610 <fsb+220>:	call   0x80483f0 <printf@plt>
+   0x8048615 <fsb+225>:	add    DWORD PTR [ebp-0x1c],0x1
+   0x8048619 <fsb+229>:	cmp    DWORD PTR [ebp-0x1c],0x3
+   0x804861d <fsb+233>:	jle    0x80485d5 <fsb+161>
+   0x804861f <fsb+235>:	mov    DWORD PTR [esp],0x8048899
+Guessed arguments:
+arg[0]: 0x804a100 ("aaaa\n")
+[------------------------------------stack-------------------------------------]
+0000| 0xffb975b0 --> 0x804a100 ("aaaa\n")
+0004| 0xffb975b4 --> 0x804a100 ("aaaa\n")
+0008| 0xffb975b8 --> 0x64 ('d')
+0012| 0xffb975bc --> 0x0 
+0016| 0xffb975c0 --> 0x0 
+0020| 0xffb975c4 --> 0x0 
+0024| 0xffb975c8 --> 0x0 
+0028| 0xffb975cc --> 0x0 
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x08048610 in fsb ()
+gdb-peda$ c
+Continuing.
+aaaa
+Give me some format strings(4)
+aaaa
+
+[----------------------------------registers-----------------------------------]
+EAX: 0x804a100 ("aaaa\n")
+EBX: 0xffba9870 --> 0x1 
+ECX: 0x804a100 ("aaaa\n")
+EDX: 0x64 ('d')
+ESI: 0xf7f47000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffb975f8 --> 0xffba9858 --> 0x0 
+ESP: 0xffb975b0 --> 0x804a100 ("aaaa\n")
+EIP: 0x8048610 (<fsb+220>:	call   0x80483f0 <printf@plt>)
+EFLAGS: 0x282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x8048603 <fsb+207>:	call   0x80483e0 <read@plt>
+   0x8048608 <fsb+212>:	mov    eax,0x804a100
+   0x804860d <fsb+217>:	mov    DWORD PTR [esp],eax
+=> 0x8048610 <fsb+220>:	call   0x80483f0 <printf@plt>
+   0x8048615 <fsb+225>:	add    DWORD PTR [ebp-0x1c],0x1
+   0x8048619 <fsb+229>:	cmp    DWORD PTR [ebp-0x1c],0x3
+   0x804861d <fsb+233>:	jle    0x80485d5 <fsb+161>
+   0x804861f <fsb+235>:	mov    DWORD PTR [esp],0x8048899
+Guessed arguments:
+arg[0]: 0x804a100 ("aaaa\n")
+[------------------------------------stack-------------------------------------]
+0000| 0xffb975b0 --> 0x804a100 ("aaaa\n")
+0004| 0xffb975b4 --> 0x804a100 ("aaaa\n")
+0008| 0xffb975b8 --> 0x64 ('d')
+0012| 0xffb975bc --> 0x0 
+0016| 0xffb975c0 --> 0x0 
+0020| 0xffb975c4 --> 0x0 
+0024| 0xffb975c8 --> 0x0 
+0028| 0xffb975cc --> 0x0 
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 1, 0x08048610 in fsb ()
+gdb-peda$ c
+Continuing.
+aaaa
+Wait a sec...
+key : 
+1111111111
+
+[----------------------------------registers-----------------------------------]
+EAX: 0xb ('\x0b')
+EBX: 0xffba9870 --> 0x1 
+ECX: 0x804a080 ("1111111111\n")
+EDX: 0x64 ('d')
+ESI: 0xf7f47000 --> 0x1cfd70 
+EDI: 0x0 
+EBP: 0xffb975f8 --> 0xffba9858 --> 0x0 
+ESP: 0xffb975b0 --> 0x804a080 ("1111111111\n")
+EIP: 0x8048676 (<fsb+322>:	call   0x8048460 <strtoull@plt>)
+EFLAGS: 0x282 (carry parity adjust zero SIGN trap INTERRUPT direction overflow)
+[-------------------------------------code-------------------------------------]
+   0x804865f <fsb+299>:	mov    DWORD PTR [esp+0x8],0xa
+   0x8048667 <fsb+307>:	mov    DWORD PTR [esp+0x4],0x0
+   0x804866f <fsb+315>:	mov    DWORD PTR [esp],0x804a080
+=> 0x8048676 <fsb+322>:	call   0x8048460 <strtoull@plt>
+   0x804867b <fsb+327>:	mov    edx,eax
+   0x804867d <fsb+329>:	sar    edx,0x1f
+   0x8048680 <fsb+332>:	mov    DWORD PTR [ebp-0x30],eax
+   0x8048683 <fsb+335>:	mov    DWORD PTR [ebp-0x2c],edx
+Guessed arguments:
+arg[0]: 0x804a080 ("1111111111\n")
+arg[1]: 0x0 
+arg[2]: 0xa ('\n')
+[------------------------------------stack-------------------------------------]
+0000| 0xffb975b0 --> 0x804a080 ("1111111111\n")
+0004| 0xffb975b4 --> 0x0 
+0008| 0xffb975b8 --> 0xa ('\n')
+0012| 0xffb975bc --> 0x0 
+0016| 0xffb975c0 --> 0x0 
+0020| 0xffb975c4 --> 0x0 
+0024| 0xffb975c8 --> 0x0 
+0028| 0xffb975cc --> 0x0 
+[------------------------------------------------------------------------------]
+Legend: code, data, rodata, value
+
+Breakpoint 2, 0x08048676 in fsb ()
+gdb-peda$ info args
+No symbol table info available.
+gdb-peda$ i r edx
+edx            0x64	0x64
+gdb-peda$ i r eax
+eax            0xb	0xb
+gdb-peda$ i r esp
+esp            0xffb975b0	0xffb975b0
+gdb-peda$ x/30wx 0xffb975b0
+0xffb975b0:	0x0804a080	0x00000000	0x0000000a	0x00000000
+0xffb975c0:	0x00000000	0x00000000	0x00000000	0x00000000
+0xffb975d0:	0x00000000	0x08048870	0x00000000	0x00000004
+0xffb975e0:	0xffba99e4	0xffbabfe1	0xffb97600	0xffb97604
+0xffb975f0:	0x00000000	0x00000000	0xffba9858	0x08048791
+0xffb97600:	0x00000000	0x00000000	0x00000000	0x00000000
+0xffb97610:	0x00000000	0x00000000	0x00000000	0x00000000
+0xffb97620:	0x00000000	0x00000000
+gdb-peda$ x/
