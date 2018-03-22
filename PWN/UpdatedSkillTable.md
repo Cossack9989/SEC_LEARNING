@@ -2,8 +2,9 @@
 ## Common Logic
 - shellcraft
 - falsify GOT
-- falsify returned calue
+- falsify returned value
 - hijack function
+- hijack register
 ## In stack
 - Stackoverflow-Ret2lib
 - Stackoverflow-Ret2reg
