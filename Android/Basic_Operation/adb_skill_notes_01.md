@@ -25,8 +25,8 @@ root@localhost:~# adb pull /mnt/sdcard/locksettingstest.db /root/Desktop/locking
 [100%] /mnt/sdcard/locksettingstest.db
 ```
 ### Method_02:
->    adb shell 
->    su root
->    cd /data/system
->    chmod 664 lockingsettings.db
+>    adb shell \n
+>    su root \n
+>    cd /data/system \n
+>    chmod 664 lockingsettings.db \n
 - Then as above.
