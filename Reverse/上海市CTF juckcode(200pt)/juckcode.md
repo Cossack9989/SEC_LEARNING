@@ -1,7 +1,3 @@
-title: 上海市ctf-re200-juckcode
-categories:
-- 二进制
----
 # 正向解析juckcode #
  一个二进制文件和一份加密后的flag,显然逆算法,扔进IDA,各种分析不出函数...怎么回事呢用OD打开查看下,有好多段可疑的汇编指令大概是pushad jmp 大量无用代码 popad
  花指令get,写脚本全部nop掉,用IDA打开处理好的文件,发现,居然还是不能F5,又发现了一段异常代码,两个jmp一个E8,nop掉E8居然就可以了,OD启动,提取目标的一段字节码.
