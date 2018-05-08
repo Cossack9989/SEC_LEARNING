@@ -3,6 +3,8 @@
 - JarvisOJ:XMANlevel
 - pwnable.kr:Toddler's Bottle
 - pwnable.kr:Rokiss
+- NJUPT-CGCTF
+- ISCC2018
 ## Reversers live long，forwarder die
 - reversing.kr
 - NJUPT-CGCTF(empty)
