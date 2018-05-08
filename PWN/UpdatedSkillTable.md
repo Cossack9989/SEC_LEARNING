@@ -13,4 +13,5 @@
 - FmtStrVul-canaryleak
 - FmtStrVul-MEMW
 ## In heap
-- GG
+- FastbinAttack-2Free-HijackFunc
+- FastbinAttack-2Free-FakeList
