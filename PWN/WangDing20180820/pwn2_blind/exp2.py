@@ -1,3 +1,6 @@
+# Use FastbinAttack to control a fd pointer
+# Alloc a chunk to make a fake chunklist
+# Use fake chunklist to falsify *(struct IO_FILE*)stdout and make a new vtable
 from pwn import *
 
 context.os='linux'
