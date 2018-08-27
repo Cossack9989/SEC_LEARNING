@@ -1,3 +1,7 @@
+# Use FastbinAttack to control chunklist
+# Point chunklist to .got in order to leak
+# Ensure the version of libc
+# hijack atoi in .got with system in mem
 from pwn import *
 
 #r=process('./pwn')
