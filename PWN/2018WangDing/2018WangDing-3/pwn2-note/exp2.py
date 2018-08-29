@@ -1,3 +1,9 @@
+# Use those indexs out of bound to override .got puts
+# alloc a part of a mem chunk and make fake_puts pointing to this mem
+# alloc plenty of mem chunks
+# Store shellcode with 2 bytes in a piece in those chunks and use short jmp inserted in the shellcode to connect it.
+# call puts(name), pwn!
+
 from pwn import *
 from binascii import hexlify
 
