@@ -6,6 +6,7 @@
 - NJUPT-CGCTF
 - ISCC2018
 - BCTF2018_AIpwn
+- 网鼎2018
 ## Reversers live long，forwarder die
 - reversing.kr
 - NJUPT-CGCTF(empty)
