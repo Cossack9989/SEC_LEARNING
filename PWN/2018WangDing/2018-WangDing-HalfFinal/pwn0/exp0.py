@@ -1,3 +1,8 @@
+# Struct Users will alloc a mem with 0x130 size and Struct Message will alloc a mem with 0x30 mem
+# Users.name will also alloc a mem with arbitary size.
+# However, while delete a certain friend, User* friend will be freed.
+# Exp-logic: alloc fast chunks in a freed small chunk and make fake size
+
 from pwn import *
 
 elf=ELF('pwn')
