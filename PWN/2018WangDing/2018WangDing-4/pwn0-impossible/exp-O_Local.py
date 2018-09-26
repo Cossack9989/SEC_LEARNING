@@ -65,6 +65,3 @@ fuckRand('\x00')
 r.recvuntil('...\n')
 
 r.interactive()
-
-
-
