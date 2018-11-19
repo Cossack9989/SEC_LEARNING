@@ -8,6 +8,8 @@
 - BCTF2018_AIpwn
 - 网鼎2018
 - 护网2018
+- HCTF2018
+- LCTF2018
 ## Reversers live long，forwarder die
 - reversing.kr
 - NJUPT-CGCTF(empty)
