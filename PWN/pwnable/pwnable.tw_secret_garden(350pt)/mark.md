@@ -1,0 +1,1 @@
+exp-marena参考了Taclt0rnx的博客 Orz大师傅tql 在此mark一下 __free_hook-0xb58 大约是initial处非零 可以用来当作fake_top_chunk
