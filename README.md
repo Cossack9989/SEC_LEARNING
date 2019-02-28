@@ -5,7 +5,7 @@
 - pwnable.kr:Rokiss
 - NJUPT-CGCTF
 - ISCC2018
-- BCTF2018_AIpwn
+- BCTF2018
 - 网鼎2018
 - 护网2018
 - HCTF2018
