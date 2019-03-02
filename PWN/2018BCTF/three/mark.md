@@ -193,7 +193,7 @@ static _IO_size_t new_do_write (_IO_FILE *fp, const char *data, _IO_size_t to_do
 
 看来flags也不可以是0x1000的整数倍（？？脱裤子放屁）
 
-最后我们得出结论 flags只要是8的倍数不是0x800倍数就行。。。于是我设置成了0xfbad1c00
+最后我们得出结论 flags只要是8的倍数不是0x800倍数就行。。。于是我设置成了0xfbad1c00，于是就可以执行SYSWRITE了嘤嘤嘤
 
 ##### 第三个利用点
 
