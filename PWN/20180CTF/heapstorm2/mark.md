@@ -12,3 +12,5 @@
 #### Tips
 - avoid [heap]:0x55xxxxxxxxxx 'cause mmaped flag
 - How to get a chunk inserted into large bins? just allocate a small chunk whose size differs from all chunks in unsorted bin, and those who unmatchable will be thown in large bins
+
+###### Finally thanks to Sakura's WP on Kanxue 
