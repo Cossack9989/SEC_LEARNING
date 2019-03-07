@@ -1,20 +1,9 @@
 # CTF_learning
-## Why not pwn with me?
-- JarvisOJ:XMANlevel
-- pwnable.kr:Toddler's Bottle
-- pwnable.kr:Rokiss
-- NJUPT-CGCTF
-- ISCC2018
-- BCTF2018
-- 网鼎2018
-- 护网2018
-- HCTF2018
-- LCTF2018
-## Reversers live long，forwarder die
-- reversing.kr
-- NJUPT-CGCTF(empty)
-- HCTF(empty)
-## What is Memory Forensics?
-- SECCON2015
-## No website no pain
-- some certain websites……
+
+##### Why not pwn with me?
+
+if any questions related to my `SEC_LEARNING` occured, please contact me with c0ss4ck9989@gmail.com
+
+##### PS
+
+yulige and MozhuCY used to contribute `SEC_LEARNING/WEB` and `SEC_LEARNING/Reverse` to my repository
