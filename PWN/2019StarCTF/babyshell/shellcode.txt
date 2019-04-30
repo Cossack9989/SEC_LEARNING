@@ -1,0 +1,213 @@
+   0:   5a                      pop    rdx
+
+   0:   5a                      pop    rdx
+   1:   5a                      pop    rdx
+
+   0:   5a                      pop    rdx
+
+   0:   20 6c 6f 76             and    BYTE PTR [rdi+rbp*2+0x76],ch
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+   1:   6f                      outs   dx,DWORD PTR ds:[rsi]
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+   1:   6f                      outs   dx,DWORD PTR ds:[rsi]
+   2:   76 65                   jbe    0x69
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+   1:   76 65                   jbe    0x68
+
+   0:   76 65                   jbe    0x67
+
+   0:   76 65                   jbe    0x67
+   2:   73 20                   jae    0x24
+
+   0:   65                      gs
+
+   0:   65 73 20                gs jae 0x23
+
+   0:   73 20                   jae    0x22
+
+   0:   73 20                   jae    0x22
+   2:   73 68                   jae    0x6c
+
+   0:   20 73 68                and    BYTE PTR [rbx+0x68],dh
+
+   0:   20 73 68                and    BYTE PTR [rbx+0x68],dh
+   3:   65                      gs
+
+   0:   73 68                   jae    0x6a
+
+   0:   73 68                   jae    0x6a
+   2:   65                      gs
+
+   0:   73 68                   jae    0x6a
+   2:   65 6c                   gs ins BYTE PTR es:[rdi],dx
+
+   0:   68                      .byte 0x68
+
+   0:   68                      .byte 0x68
+   1:   65                      gs
+
+   0:   68                      .byte 0x68
+   1:   65 6c                   gs ins BYTE PTR es:[rdi],dx
+
+   0:   68                      .byte 0x68
+   1:   65 6c                   gs ins BYTE PTR es:[rdi],dx
+   3:   6c                      ins    BYTE PTR es:[rdi],dx
+
+   0:   65                      gs
+
+   0:   65 6c                   gs ins BYTE PTR es:[rdi],dx
+
+   0:   65 6c                   gs ins BYTE PTR es:[rdi],dx
+   2:   6c                      ins    BYTE PTR es:[rdi],dx
+
+   0:   65 6c                   gs ins BYTE PTR es:[rdi],dx
+   2:   6c                      ins    BYTE PTR es:[rdi],dx
+   3:   5f                      pop    rdi
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+   1:   6c                      ins    BYTE PTR es:[rdi],dx
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+   1:   6c                      ins    BYTE PTR es:[rdi],dx
+   2:   5f                      pop    rdi
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+
+   0:   6c                      ins    BYTE PTR es:[rdi],dx
+   1:   5f                      pop    rdi
+
+   0:   5f                      pop    rdi
+
+   0:   5f                      pop    rdi
+   1:   63 6f 64                movsxd ebp,DWORD PTR [rdi+0x64]
+
+   0:   63 6f 64                movsxd ebp,DWORD PTR [rdi+0x64]
+
+   0:   63 6f 64                movsxd ebp,DWORD PTR [rdi+0x64]
+   3:   65                      gs
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+   1:   64                      fs
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+   1:   64                      fs
+   2:   65                      gs
+
+   0:   64                      fs
+
+   0:   64                      fs
+   1:   65                      gs
+
+   0:   64 65 2c 61             fs gs sub al,0x61
+
+   0:   65                      gs
+
+   0:   65 2c 61                gs sub al,0x61
+
+   0:   65 2c 61                gs sub al,0x61
+   3:   6e                      outs   dx,BYTE PTR ds:[rsi]
+
+   0:   2c 61                   sub    al,0x61
+
+   0:   2c 61                   sub    al,0x61
+   2:   6e                      outs   dx,BYTE PTR ds:[rsi]
+
+   0:   2c 61                   sub    al,0x61
+   2:   6e                      outs   dx,BYTE PTR ds:[rsi]
+   3:   64                      fs
+
+   0:   6e                      outs   dx,BYTE PTR ds:[rsi]
+
+   0:   6e                      outs   dx,BYTE PTR ds:[rsi]
+   1:   64                      fs
+
+   0:   64                      fs
+
+   0:   64 20 68 65             and    BYTE PTR fs:[rax+0x65],ch
+
+   0:   20 68 65                and    BYTE PTR [rax+0x65],ch
+
+   0:   65                      gs
+
+   0:   65 72 65                gs jb  0x68
+
+   0:   72 65                   jb     0x67
+
+   0:   65                      gs
+
+   0:   65 20 69 73             and    BYTE PTR gs:[rcx+0x73],ch
+
+   0:   20 69 73                and    BYTE PTR [rcx+0x73],ch
+
+   0:   20 61 20                and    BYTE PTR [rcx+0x20],ah
+
+   0:   20 61 20                and    BYTE PTR [rcx+0x20],ah
+   3:   67                      addr32
+
+   0:   20 67 69                and    BYTE PTR [rdi+0x69],ah
+
+   0:   20 67 69                and    BYTE PTR [rdi+0x69],ah
+   3:   66                      data16
+
+   0:   67                      addr32
+
+   0:   66                      data16
+
+   0:   66 74 3a                data16 je 0x3d
+
+   0:   74 3a                   je     0x3c
+
+   0:   74 3a                   je     0x3c
+   2:   0f 05                   syscall
+
+   0:   3a 0f                   cmp    cl,BYTE PTR [rdi]
+
+   0:   0f 05                   syscall
+
+   0:   20 65 6e                and    BYTE PTR [rbp+0x6e],ah
+
+   0:   65                      gs
+
+   0:   65 6e                   outs   dx,BYTE PTR gs:[rsi]
+
+   0:   65 6e                   outs   dx,BYTE PTR gs:[rsi]
+   2:   6a 6f                   push   0x6f
+
+   0:   6e                      outs   dx,BYTE PTR ds:[rsi]
+
+   0:   6e                      outs   dx,BYTE PTR ds:[rsi]
+   1:   6a 6f                   push   0x6f
+
+   0:   6a 6f                   push   0x6f
+
+   0:   6a 6f                   push   0x6f
+   2:   79 20                   jns    0x24
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+
+   0:   6f                      outs   dx,DWORD PTR ds:[rsi]
+   1:   79 20                   jns    0x23
+
+   0:   79 20                   jns    0x22
+
+   0:   20 69 74                and    BYTE PTR [rcx+0x74],ch
+
+   0:   74 21                   je     0x23
+
+   0:   21 0a                   and    DWORD PTR [rdx],ecx
+
+   0:   21 0a                   and    DWORD PTR [rdx],ecx
+
+   0:   21 0a                   and    DWORD PTR [rdx],ecx
+
