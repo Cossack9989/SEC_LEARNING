@@ -1,0 +1,11 @@
+diff -uNr ChakraCore_bak/lib/Backend/GlobOptFields.cpp ChakraCore/lib/Backend/GlobOptFields.cpp
+--- ChakraCore_bak/lib/Backend/GlobOptFields.cpp	2019-04-24 10:14:24.012350694 +0800
++++ ChakraCore/lib/Backend/GlobOptFields.cpp	2019-04-24 10:16:11.197823797 +0800
+@@ -482,7 +482,6 @@
+         break;
+ 
+     case Js::OpCode::InitClass:
+-    case Js::OpCode::InitProto:
+     case Js::OpCode::NewScObjectNoCtor:
+         if (inGlobOpt)
+         {
