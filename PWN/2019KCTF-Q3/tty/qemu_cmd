@@ -1,0 +1,14 @@
+#!/bin/bash
+#stty intr ^]
+
+
+bzImage_dir=$1
+cpio_dir=$2
+
+#run vm
+qemu-system-x86_64 -m 256M \
+    -nographic -kernel $bzImage_dir \
+    -append 'root=/dev/ram rw console=ttyS0 loglevel=3 oops=panic panic=1 kaslr' \
+    -monitor /dev/null -initrd $cpio_dir \
+    -smp cores=2,threads=2  \
+    -cpu kvm64,+smep,+smap  2>/dev/null
