@@ -1,0 +1,39 @@
+diff --git a/src/d8/d8.cc b/src/d8/d8.cc
+index 13a35b0cd3..3211a43525 100644
+--- a/src/d8/d8.cc
++++ b/src/d8/d8.cc
+@@ -1691,7 +1691,7 @@ Local<String> Shell::Stringify(Isolate* isolate, Local<Value> value) {
+ }
+ 
+ Local<ObjectTemplate> Shell::CreateGlobalTemplate(Isolate* isolate) {
+-  Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);
++  Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);/*
+   global_template->Set(
+       String::NewFromUtf8(isolate, "print", NewStringType::kNormal)
+           .ToLocalChecked(),
+@@ -1879,7 +1879,7 @@ Local<ObjectTemplate> Shell::CreateGlobalTemplate(Isolate* isolate) {
+         String::NewFromUtf8(isolate, "async_hooks", NewStringType::kNormal)
+             .ToLocalChecked(),
+         async_hooks_templ);
+-  }
++  }*/
+ 
+   return global_template;
+ }
+diff --git a/src/objects/elements.cc b/src/objects/elements.cc
+index 6e5648d2f4..5e259925dc 100644
+--- a/src/objects/elements.cc
++++ b/src/objects/elements.cc
+@@ -2148,12 +2148,6 @@ class FastElementsAccessor : public ElementsAccessorBase<Subclass, KindTraits> {
+     }
+ 
+     // Make sure we have enough space.
+-    uint32_t capacity =
+-        Subclass::GetCapacityImpl(*receiver, receiver->elements());
+-    if (end > capacity) {
+-      Subclass::GrowCapacityAndConvertImpl(receiver, end);
+-      CHECK_EQ(Subclass::kind(), receiver->GetElementsKind());
+-    }
+     DCHECK_LE(end, Subclass::GetCapacityImpl(*receiver, receiver->elements()));
+ 
+     for (uint32_t index = start; index < end; ++index) {

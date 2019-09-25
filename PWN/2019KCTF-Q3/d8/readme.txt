@@ -1,0 +1,3 @@
+commit=a2e86bf6dc0dd260455ae6ceacec0f7869d965a3
+https://bbs.pediy.com/thread-252812.htm
+远程没有回显属于正常现象，请将exploit压缩成一行后发送到服务器
