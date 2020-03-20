@@ -1,0 +1,61 @@
+diff --git a/BUILD.gn b/BUILD.gn
+index 27994952e4..19abaa3b3a 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -103,8 +103,8 @@ declare_args() {
+   v8_enable_verify_csa = false
+ 
+   # Enable pointer compression (sets -dV8_COMPRESS_POINTERS).
+-  v8_enable_pointer_compression = ""
+-  v8_enable_31bit_smis_on_64bit_arch = true
++  v8_enable_pointer_compression = false
++  v8_enable_31bit_smis_on_64bit_arch = false
+ 
+   # Sets -dOBJECT_PRINT.
+   v8_enable_object_print = ""
+diff --git a/src/d8/d8.cc b/src/d8/d8.cc
+index 3fbc0c0cf9..de51ab013b 100644
+--- a/src/d8/d8.cc
++++ b/src/d8/d8.cc
+@@ -1819,6 +1819,7 @@ Local<String> Shell::Stringify(Isolate* isolate, Local<Value> value) {
+ 
+ Local<ObjectTemplate> Shell::CreateGlobalTemplate(Isolate* isolate) {
+   Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);
++  /*
+   global_template->Set(
+       String::NewFromUtf8(isolate, "print", NewStringType::kNormal)
+           .ToLocalChecked(),
+@@ -1839,10 +1840,12 @@ Local<ObjectTemplate> Shell::CreateGlobalTemplate(Isolate* isolate) {
+       String::NewFromUtf8(isolate, "readbuffer", NewStringType::kNormal)
+           .ToLocalChecked(),
+       FunctionTemplate::New(isolate, ReadBuffer));
++  */
+   global_template->Set(
+       String::NewFromUtf8(isolate, "readline", NewStringType::kNormal)
+           .ToLocalChecked(),
+       FunctionTemplate::New(isolate, ReadLine));
++  /*
+   global_template->Set(
+       String::NewFromUtf8(isolate, "load", NewStringType::kNormal)
+           .ToLocalChecked(),
+@@ -2011,6 +2014,7 @@ Local<ObjectTemplate> Shell::CreateGlobalTemplate(Isolate* isolate) {
+             .ToLocalChecked(),
+         async_hooks_templ);
+   }
++  */
+ 
+   return global_template;
+ }
+diff --git a/src/date/date.h b/src/date/date.h
+index 1f6c79c5d4..bf77166064 100644
+--- a/src/date/date.h
++++ b/src/date/date.h
+@@ -25,7 +25,7 @@ class V8_EXPORT_PRIVATE DateCache {
+ 
+   // The largest time that can be stored in JSDate.
+   static const int64_t kMaxTimeInMs =
+-      static_cast<int64_t>(864000000) * 10000000;
++      static_cast<int64_t>(864000000) * 15000000;
+ 
+   // Conservative upper bound on time that can be stored in JSDate
+   // before UTC conversion.
